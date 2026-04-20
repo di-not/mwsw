@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Новость - MWSW</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .news-detail {
+        max-width: 800px;
+        margin: 30px auto;
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .news-header {
+        margin-bottom: 30px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 20px;
+      }
+
+      .news-date {
+        color: #7f8c8d;
+        font-size: 0.9em;
+        margin-bottom: 10px;
+      }
+
+      .news-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin: 20px 0;
+      }
+
+      .news-content {
+        line-height: 1.8;
+      }
+
+      .news-content p {
+        margin-bottom: 20px;
+      }
+
+      .news-content h2,
+      .news-content h3 {
+        margin: 30px 0 15px 0;
+        color: #2c3e50;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-top: 30px;
+        color: #3498db;
+        text-decoration: none;
+        font-weight: bold;
+        transition: color 0.3s;
+      }
+
+      .back-link:hover {
+        color: #2980b9;
+      }
+
+      .news-meta {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        color: #7f8c8d;
+        font-size: 0.9em;
+      }
+      .title{
+        color:#FCE036;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div class="logo">
+          <a href="index.html">MWSW</a>
+          <p>The Man Who Sold The World</p>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="catalog.html">Каталог</a></li>
+            <li><a href="news.html">Новости</a></li>
+            <li><a href="cart.html">Корзина</a></li>
+            <li><a href="login.html">Войти</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <div class="news-detail">
+          <header class="news-header">
+            <div class="news-date">15 марта 2023</div>
+            <h1 class="title">Открыта новая экзопланета в зоне обитаемости</h1>
+          </header>
+
+          <img src="https://i.pinimg.com/1200x/d2/9f/1a/d29f1a4c94f11aadc4d8732190a5b1e6.jpg" alt="Новая экзопланета" class="news-image" />
+
+          <div class="news-content">
+            <p>
+              Астрономы обнаружили планету, похожую на Землю, в зоне обитаемости звезды. Это открытие может иметь
+              фундаментальное значение для поиска жизни за пределами нашей Солнечной системы.
+            </p>
+
+            <h2>Характеристики новой планеты</h2>
+            <p>
+              Новая экзопланета, получившая название Kepler-452b, вращается вокруг звезды, очень похожей на наше Солнце.
+              Ее радиус примерно на 60% больше земного, что делает ее "супер-Землей".
+            </p>
+
+            <p>
+              Планета находится в так называемой "зоне Златовласки" - области вокруг звезды, где условия могут быть
+              подходящими для существования жидкой воды на поверхности. Это ключевой фактор для возможности развития
+              жизни.
+            </p>
+
+            <h2>Значение открытия</h2>
+            <p>Открытие Kepler-452b представляет особый интерес по нескольким причинам:</p>
+
+            <ul>
+              <li>Звезда, вокруг которой вращается планета, очень похожа на Солнце</li>
+              <li>Период обращения планеты составляет 385 дней - очень близко к земному году</li>
+              <li>Планета получает примерно столько же энергии от своей звезды, сколько Земля от Солнца</li>
+              <li>
+                Возраст системы оценивается в 6 миллиардов лет, что на 1.5 миллиарда лет больше, чем у Солнечной системы
+              </li>
+            </ul>
+
+            <h2>Будущие исследования</h2>
+            <p>
+              Ученые планируют продолжить изучение Kepler-452b с помощью новых телескопов, таких как James Webb Space
+              Telescope. Эти наблюдения помогут определить состав атмосферы планеты и возможные признаки биологической
+              активности.
+            </p>
+
+            <p>
+              Это открытие подчеркивает, что планеты, похожие на Землю, могут быть более распространены, чем считалось
+              ранее, что увеличивает шансы на обнаружение жизни за пределами нашей Солнечной системы.
+            </p>
+          </div>
+
+          <div class="news-meta">
+            <p>Автор: Доктор Астрономов</p>
+            <p>Категория: Научные открытия</p>
+          </div>
+
+          <a href="news.html" class="back-link">← Вернуться к списку новостей</a>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="footer-links">
+          <a href="index.html">О нас</a>
+          <a href="#">Facebook</a>
+          <a href="#">Twitter</a>
+          <a href="#">Instagram</a>
+        </div>
+        <p>&copy; 2023 MWSW - The Man Who Sold The World. Все права защищены.</p>
+      </div>
+    </footer>
+  </body>
+</html>

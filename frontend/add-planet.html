@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Добавить планету - MWSW</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .admin-page {
+        max-width: 980px;
+        margin: 30px auto 0;
+      }
+
+      .admin-card {
+        background: #fff;
+        border: 1px solid #d8e1ea;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      }
+
+      .admin-card h1 {
+        margin-bottom: 8px;
+      }
+
+      .admin-subtitle {
+        color: #5c6773;
+        margin-bottom: 18px;
+      }
+
+      .admin-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+      }
+
+      .admin-field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .admin-field label {
+        font-size: 0.86rem;
+        color: #2c3e50;
+      }
+
+      .field-hint {
+        font-size: 0.78rem;
+        color: #6c7783;
+      }
+
+      .admin-field input,
+      .admin-field textarea,
+      .admin-field select {
+        width: 100%;
+        padding: 9px 10px;
+        border: 1px solid #ccd6e0;
+        border-radius: 8px;
+        font: inherit;
+      }
+
+      .admin-field textarea {
+        min-height: 90px;
+        resize: vertical;
+      }
+
+      .span-all {
+        grid-column: 1 / -1;
+      }
+
+      .admin-actions {
+        margin-top: 14px;
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+
+      .admin-feedback {
+        margin-bottom: 14px;
+        min-height: 74px;
+        width: 100%;
+      }
+
+      .admin-errors {
+        margin: 0;
+        padding-left: 18px;
+        min-height: 48px;
+        color: #c0392b;
+        font-size: 0.9rem;
+      }
+
+      .admin-errors li {
+        margin: 2px 0;
+      }
+
+      .admin-errors:empty::before {
+        content: "\00a0";
+      }
+
+      .admin-status {
+        min-height: 22px;
+        font-size: 0.92rem;
+      }
+
+      .admin-status.error {
+        color: #c0392b;
+      }
+
+      .admin-status.success {
+        color: #1f7a1f;
+      }
+
+      .admin-status.info {
+        color: #2c3e50;
+      }
+
+      @media (max-width: 768px) {
+        .admin-page {
+          margin-top: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div class="logo">
+          <a href="index.html">MWSW</a>
+          <p>The Man Who Sold The World</p>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="catalog.html">Каталог</a></li>
+            <li><a href="favorites.html">Избранное</a></li>
+            <li><a href="cart.html" id="cart-link">Корзина</a></li>
+            <li>
+              <a href="add-planet.html" id="admin-add-link" class="active">Добавить планету</a>
+            </li>
+            <li><a href="login.html" id="auth-link">Войти</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="container admin-page">
+        <section class="admin-card">
+          <h1>Добавление планеты</h1>
+          <p class="admin-subtitle">
+            Заполните карточку новой планеты. Валидация выполняется на стороне сервера.
+          </p>
+
+          <div id="admin-feedback" class="admin-feedback" aria-live="polite">
+            <ul id="admin-errors" class="admin-errors"></ul>
+            <div id="admin-status" class="admin-status"></div>
+          </div>
+
+          <form id="admin-add-planet-form">
+            <div class="admin-grid">
+              <div class="admin-field">
+                <label for="admin-name">Название *</label>
+                <input id="admin-name" type="text" minlength="2" maxlength="50" required placeholder="Например, Луна" title="Введите название планеты (минимум 2 символа)" />
+                <small class="field-hint">Короткое и понятное название для каталога</small>
+              </div>
+
+              <div class="admin-field">
+                <label for="admin-price">Цена</label>
+                <input id="admin-price" type="number" min="1000" step="100000" required placeholder="Например, 1000000" title="Цена в рублях, минимум 1000, шаг 100000" />
+                <small class="field-hint">Шаг: 100 000</small>
+              </div>
+
+              <div class="admin-field">
+                <label for="admin-type">Тип</label>
+                <select id="admin-type" required title="Выберите тип планеты">
+                  <option value="" selected disabled>Выберите тип</option>
+                  <option value="Каменистая">Каменистая</option>
+                  <option value="Газовая">Газовая</option>
+                  <option value="Ледяной гигант">Ледяной гигант</option>
+                  <option value="Карликовая планета">Карликовая планета</option>
+                </select>
+                <small class="field-hint">Тип выбирается из списка</small>
+              </div>
+
+              <div class="admin-field">
+                <label for="admin-image">Ссылка на изображение</label>
+                <input id="admin-image" type="url" required placeholder="https://..." title="Прямая ссылка на изображение (http/https)" />
+                <small class="field-hint">Используйте прямой URL картинки</small>
+              </div>
+
+              <div class="admin-field">
+                <label for="admin-mass">Масса</label>
+                <input id="admin-mass" type="number" min="0" step="100" required placeholder="Например, 10000" title="Масса, целое число, шаг 100" />
+                <small class="field-hint">Шаг: 100</small>
+              </div>
+
+              <div class="admin-field">
+                <label for="admin-diameter">Диаметр</label>
+                <input id="admin-diameter" type="number" min="0" step="100" required placeholder="Например, 1000" title="Диаметр, целое число, шаг 100" />
+                <small class="field-hint">Шаг: 100</small>
+              </div>
+
+              <div class="admin-field">
+                <label for="admin-distance">Расстояние от Солнца</label>
+                <input id="admin-distance" type="number" min="0" step="1000" required placeholder="Например, 10000" title="Расстояние от Солнца, целое число, шаг 1000" />
+                <small class="field-hint">Шаг: 1 000</small>
+              </div>
+
+              <div class="admin-field">
+                <label for="admin-moons">Количество лун</label>
+                <input id="admin-moons" type="number" min="0" max="500" step="1" required placeholder="Например, 2" title="Целое число от 0 до 500, шаг 1" />
+                <small class="field-hint">Только целые значения, шаг: 1</small>
+              </div>
+
+              <div class="admin-field">
+                <label for="admin-orbital">Период обращения</label>
+                <input id="admin-orbital" type="number" min="10" step="10" required placeholder="Например, 70" title="Период обращения, целое число кратное 10" />
+                <small class="field-hint">Шаг: 10</small>
+              </div>
+
+              <div class="admin-field span-all">
+                <label for="admin-short-description">Короткое описание</label>
+                <textarea id="admin-short-description" minlength="10" required placeholder="Краткое описание для карточки в каталоге" title="Короткое описание (минимум 10 символов)"></textarea>
+                <small class="field-hint">Показывается в карточке</small>
+              </div>
+
+              <div class="admin-field span-all">
+                <label for="admin-description">Полное описание</label>
+                <textarea id="admin-description" minlength="30" required placeholder="Подробная информация о планете" title="Подробное описание (минимум 30 символов)"></textarea>
+                <small class="field-hint">Показывается на странице планеты</small>
+              </div>
+
+              <div class="admin-field">
+                <label for="admin-sold-out">Наличие</label>
+                <select id="admin-sold-out">
+                  <option value="false">В наличии</option>
+                  <option value="true">Распродано</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="admin-actions">
+              <button class="btn" type="submit">Добавить планету</button>
+              <a class="btn" href="catalog.html" style="background: #95a5a6">Вернуться в каталог</a>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="footer-links">
+          <a href="index.html">О нас</a>
+          <a href="#">Facebook</a>
+          <a href="#">Twitter</a>
+          <a href="#">Instagram</a>
+        </div>
+        <p>&copy; 2024 MWSW - The Man Who Sold The World.</p>
+      </div>
+    </footer>
+
+    <script>
+      const API_BASE_URL = "http://localhost:5280";
+      const ADMIN_EMAILS = new Set(["admin@example.com", "ivan@example.com"]);
+      let currentUser = null;
+
+      function getStoredUser() {
+        const stored = localStorage.getItem("currentUser") || sessionStorage.getItem("currentUser");
+        if (!stored) return null;
+
+        try {
+          return JSON.parse(stored);
+        } catch {
+          return null;
+        }
+      }
+
+      function getCurrentUserId() {
+        if (!currentUser) return null;
+        return currentUser.id ?? currentUser.Id ?? null;
+      }
+
+      function getCurrentUserEmail() {
+        if (!currentUser) return "";
+        const email = currentUser.email ?? currentUser.Email ?? "";
+        return typeof email === "string" ? email.trim() : "";
+      }
+
+      function isCurrentUserAdmin() {
+        if (!currentUser) return false;
+        if (currentUser.isAdmin === true || currentUser.IsAdmin === true) return true;
+
+        const email = getCurrentUserEmail().toLowerCase();
+        return email ? ADMIN_EMAILS.has(email) : false;
+      }
+
+      function updateHeader() {
+        const authLink = document.getElementById("auth-link");
+        const adminLink = document.getElementById("admin-add-link");
+
+        if (currentUser) {
+          const displayName = currentUser.fullName || currentUser.FullName || "Профиль";
+          authLink.textContent = displayName ? displayName.split(" ")[0] : "Профиль";
+          authLink.href = "profile.html";
+        } else {
+          authLink.textContent = "Войти";
+          authLink.href = "login.html";
+        }
+
+        adminLink.style.display = isCurrentUserAdmin() ? "inline-block" : "none";
+      }
+
+      async function updateCartCounter() {
+        const cartLink = document.getElementById("cart-link");
+        if (!cartLink) return;
+
+        const baseLabel =
+          cartLink.dataset.baseLabel || cartLink.textContent.replace(/\s*\(\d+\)\s*$/, "").trim() || "Корзина";
+        cartLink.dataset.baseLabel = baseLabel;
+
+        try {
+          const userId = getCurrentUserId();
+          let url = `${API_BASE_URL}/api/cart`;
+          if (userId !== null && userId !== undefined) {
+            url += `?userId=${encodeURIComponent(userId)}`;
+          }
+
+          const response = await fetch(url);
+          if (!response.ok) throw new Error("Не удалось загрузить корзину");
+
+          const items = await response.json();
+          const totalCount = Array.isArray(items)
+            ? items.reduce((sum, item) => {
+                const qty = Number(item?.Quantity ?? item?.quantity ?? 0);
+                return sum + (Number.isFinite(qty) && qty > 0 ? qty : 0);
+              }, 0)
+            : 0;
+
+          cartLink.textContent = totalCount > 0 ? `${baseLabel} (${totalCount})` : baseLabel;
+        } catch {
+          cartLink.textContent = baseLabel;
+        }
+      }
+
+      function toNullableNumber(value) {
+        const normalized = value.trim();
+        if (!normalized) return null;
+        const parsed = Number(normalized);
+        return Number.isFinite(parsed) ? parsed : null;
+      }
+
+      function toNullableInt(value) {
+        const normalized = value.trim();
+        if (!normalized) return null;
+        const parsed = parseInt(normalized, 10);
+        return Number.isFinite(parsed) ? parsed : null;
+      }
+
+      function setStatus(message, type = "info") {
+        const status = document.getElementById("admin-status");
+        if (!status) return;
+        status.className = type ? `admin-status ${type}` : "admin-status";
+        status.textContent = message || "";
+      }
+
+      function setErrors(errors = []) {
+        const errorsList = document.getElementById("admin-errors");
+        if (!errorsList) return;
+
+        errorsList.innerHTML = "";
+
+        if (!Array.isArray(errors) || errors.length === 0) return;
+
+        errors.forEach((errorText) => {
+          if (errorText === null || errorText === undefined) return;
+          const li = document.createElement("li");
+          li.textContent = String(errorText);
+          errorsList.appendChild(li);
+        });
+      }
+
+      function extractBackendErrors(data) {
+        if (!data || typeof data !== "object") return [];
+
+        if (Array.isArray(data.errors)) {
+          return data.errors.filter((item) => item !== null && item !== undefined);
+        }
+
+        if (data.errors && typeof data.errors === "object") {
+          const flattened = [];
+          Object.values(data.errors).forEach((group) => {
+            if (Array.isArray(group)) {
+              group.forEach((msg) => {
+                if (msg !== null && msg !== undefined) flattened.push(msg);
+              });
+            } else if (group !== null && group !== undefined) {
+              flattened.push(group);
+            }
+          });
+          return flattened;
+        }
+
+        return [];
+      }
+
+      function ensureAdminAccess() {
+        if (currentUser && isCurrentUserAdmin()) return true;
+
+        window.location.href = "catalog.html";
+        return false;
+      }
+
+      async function handleAdminAddPlanet(event) {
+        event.preventDefault();
+
+        if (!ensureAdminAccess()) return;
+
+        const form = document.getElementById("admin-add-planet-form");
+        const submitButton = form?.querySelector('button[type="submit"]');
+
+        const payload = {
+          name: document.getElementById("admin-name").value.trim(),
+          shortDescription: document.getElementById("admin-short-description").value.trim(),
+          description: document.getElementById("admin-description").value.trim(),
+          imageUrl: document.getElementById("admin-image").value.trim(),
+          price: toNullableNumber(document.getElementById("admin-price").value),
+          mass: document.getElementById("admin-mass").value.trim(),
+          diameter: document.getElementById("admin-diameter").value.trim(),
+          distanceFromSun: document.getElementById("admin-distance").value.trim(),
+          type: document.getElementById("admin-type").value.trim(),
+          moons: toNullableInt(document.getElementById("admin-moons").value),
+          orbitalPeriod: document.getElementById("admin-orbital").value.trim(),
+          soldOut: document.getElementById("admin-sold-out").value === "true",
+          adminEmail: getCurrentUserEmail(),
+        };
+
+        if (submitButton) submitButton.disabled = true;
+        setErrors([]);
+        setStatus("Сохраняем планету...", "info");
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/planets`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+          const data = await response.json().catch(() => ({}));
+
+          if (response.status === 405) {
+            setErrors([]);
+            setStatus(
+              "Сервер вернул 405 для POST /api/planets. Обычно запущена старая версия backend. Полностью перезапустите API и повторите.",
+              "error",
+            );
+            return;
+          }
+
+          if (!response.ok) {
+            const backendErrors = extractBackendErrors(data);
+            setErrors(backendErrors);
+            setStatus(
+              data.message ||
+                (backendErrors.length > 0 ? "Исправьте ошибки в форме" : "Не удалось добавить планету"),
+              "error",
+            );
+            return;
+          }
+
+          form.reset();
+          setErrors([]);
+          setStatus(data.message || "Планета успешно добавлена", "success");
+        } catch {
+          setErrors([]);
+          setStatus("Не удалось добавить планету", "error");
+        } finally {
+          if (submitButton) submitButton.disabled = false;
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        currentUser = getStoredUser();
+        updateHeader();
+        updateCartCounter();
+
+        if (!ensureAdminAccess()) return;
+
+        document.getElementById("admin-add-planet-form").addEventListener("submit", handleAdminAddPlanet);
+      });
+    </script>
+  </body>
+</html>

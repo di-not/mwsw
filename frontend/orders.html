@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>История заказов - MWSW</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .orders-container {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        gap: 30px;
+        margin-top: 30px;
+      }
+
+      .orders-sidebar {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        height: fit-content;
+      }
+
+      .orders-content {
+        background: white;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .user-avatar {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: #3498db;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2em;
+        margin: 0 auto 15px;
+      }
+
+      .profile-menu {
+        list-style: none;
+      }
+
+      .profile-menu li {
+        margin-bottom: 10px;
+      }
+
+      .profile-menu a {
+        display: block;
+        padding: 10px 15px;
+        color: #2c3e50;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background 0.3s;
+      }
+
+      .profile-menu a:hover,
+      .profile-menu a.active {
+        background: #f5f5f5;
+        color: #fce036;
+      }
+
+      .order-card {
+        border: 1px solid #eee;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: box-shadow 0.3s;
+      }
+
+      .order-card:hover {
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .order-id {
+        font-weight: bold;
+        color: #2c3e50;
+      }
+
+      .order-date {
+        color: #7f8c8d;
+      }
+
+      .order-status {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8em;
+        font-weight: bold;
+      }
+
+      .status-delivered {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .status-processing {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      .status-shipped {
+        background: #cce7ff;
+        color: #004085;
+      }
+
+      .order-items {
+        margin-bottom: 15px;
+      }
+
+      .order-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .item-image {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 5px;
+        margin-right: 15px;
+      }
+
+      .item-details {
+        flex-grow: 1;
+      }
+
+      .item-name {
+        font-weight: bold;
+      }
+
+      .item-price {
+        color: #2c3e50;
+      }
+
+      .order-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+      }
+
+      .order-total {
+        font-weight: bold;
+        font-size: 1.1em;
+      }
+
+      .order-actions a {
+        color: #d7c33b;
+        text-decoration: none;
+        margin-left: 15px;
+        transition: color 0.3s;
+      }
+
+      .order-actions a:hover {
+        color: #fce036;
+      }
+
+      .no-orders {
+        text-align: center;
+        padding: 50px 20px;
+      }
+
+      .no-orders-icon {
+        font-size: 4em;
+        color: #bdc3c7;
+        margin-bottom: 20px;
+      }
+
+      @media (max-width: 768px) {
+        .orders-container {
+          grid-template-columns: 1fr;
+        }
+
+        .order-header,
+        .order-footer {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .order-status,
+        .order-actions {
+          margin-top: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div class="logo">
+          <a href="index.html">MWSW</a>
+          <p>The Man Who Sold The World</p>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="catalog.html">Каталог</a></li>
+            <li><a href="favorites.html">Избранное</a></li>
+            <li><a href="cart.html">Корзина</a></li>
+            <li><a href="profile.html">Личный кабинет</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <h1>История заказов</h1>
+
+        <div class="orders-container">
+          <aside class="orders-sidebar">
+            <div class="user-avatar">
+              <div class="avatar" id="user-avatar">U</div>
+              <h2 id="user-name">Загрузка...</h2>
+              <p>Клиент</p>
+            </div>
+
+            <ul class="profile-menu">
+              <li><a href="profile.html">Общая информация</a></li>
+              <li><a href="orders.html" class="active">История заказов</a></li>
+              <li><a href="#" onclick="logout()">Выйти</a></li>
+            </ul>
+          </aside>
+
+          <div class="orders-content" id="orders-content">
+            <div class="loading-spinner">Загрузка заказов...</div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="footer-links">
+          <a href="index.html">О нас</a>
+          <a href="#">Facebook</a>
+          <a href="#">Twitter</a>
+          <a href="#">Instagram</a>
+        </div>
+        <p>
+          &copy; 2024 MWSW - The Man Who Sold The World. Все права защищены.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      let currentUser = null;
+
+      function checkAuth() {
+        const user =
+          localStorage.getItem("currentUser") ||
+          sessionStorage.getItem("currentUser");
+        if (user) {
+          currentUser = JSON.parse(user);
+          document.getElementById("user-name").textContent =
+            currentUser.fullName || "Пользователь";
+          const initials = (currentUser.fullName || "U")
+            .split(" ")
+            .map((n) => n[0])
+            .join("")
+            .toUpperCase();
+          document.getElementById("user-avatar").textContent = initials;
+          loadOrders();
+        } else {
+          window.location.href = "login.html";
+        }
+      }
+
+      function logout() {
+        localStorage.removeItem("currentUser");
+        sessionStorage.removeItem("currentUser");
+        window.location.href = "index.html";
+      }
+
+      function formatPrice(price) {
+        if (!price && price !== 0) return "0";
+        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      }
+
+      function formatDate(dateString) {
+        if (!dateString) return "Дата неизвестна";
+        const date = new Date(dateString);
+        return date.toLocaleDateString("ru-RU");
+      }
+
+      async function loadOrders() {
+        const container = document.getElementById("orders-content");
+
+        try {
+          const response = await fetch(
+            `${API_BASE_URL}/api/orders?userId=${currentUser.id}`,
+          );
+          let orders = [];
+
+          if (response.ok) {
+            orders = await response.json();
+          } else {
+            orders = [
+              {
+                id: "MW-2023-001",
+                date: "2023-03-15T00:00:00",
+                status: "delivered",
+                total: 8060000000,
+                items: [
+                  {
+                    name: "Марс",
+                    price: 3500000000,
+                    image:
+                      "https://i.pinimg.com/736x/e0/be/a0/e0bea09fd3261b3c7c8287c29c8a54f0.jpg",
+                  },
+                  {
+                    name: "Венера",
+                    price: 2800000000,
+                    image:
+                      "https://i.pinimg.com/1200x/6c/e1/c1/6ce1c11e55d9177c780aa55490637dc9.jpg",
+                  },
+                ],
+              },
+            ];
+          }
+
+          if (orders.length === 0) {
+            container.innerHTML = `
+                        <div class="no-orders">
+                            <div class="no-orders-icon">📦</div>
+                            <h2>У вас пока нет заказов</h2>
+                            <p>Совершите первую покупку в нашем каталоге</p>
+                            <a href="catalog.html" class="btn">Перейти в каталог</a>
+                        </div>
+                    `;
+            return;
+          }
+
+          const statusMap = {
+            delivered: "Доставлен",
+            processing: "Обрабатывается",
+            shipped: "Отправлен",
+          };
+
+          container.innerHTML = orders
+            .map(
+              (order) => `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <div class="order-id">Заказ #${order.id}</div>
+                                <div class="order-date">${formatDate(order.date)}</div>
+                            </div>
+                            <div class="order-status status-${order.status}">${statusMap[order.status] || order.status}</div>
+                        </div>
+
+                        <div class="order-items">
+                            ${order.items
+                              .map(
+                                (item) => `
+                                <div class="order-item">
+                                    <img src="${item.image}" alt="${item.name}" class="item-image" onerror="this.src='https://via.placeholder.com/60'">
+                                    <div class="item-details">
+                                        <div class="item-name">${item.name}</div>
+                                        <div class="item-price">${formatPrice(item.price)} ₽</div>
+                                    </div>
+                                </div>
+                            `,
+                              )
+                              .join("")}
+                        </div>
+
+                        <div class="order-footer">
+                            <div class="order-total">Итого: ${formatPrice(order.total)} ₽</div>
+                            <div class="order-actions">
+                                <a href="#">Повторить заказ</a>
+                            </div>
+                        </div>
+                    </div>
+                `,
+            )
+            .join("");
+        } catch (error) {
+          console.error("Ошибка загрузки заказов:", error);
+          container.innerHTML =
+            '<div class="no-orders"><p>Ошибка загрузки заказов</p></div>';
+        }
+      }
+
+      const API_BASE_URL = "http://localhost:5280";
+      document.addEventListener("DOMContentLoaded", checkAuth);
+    </script>
+  </body>
+</html>

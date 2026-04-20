@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Новости - MWSW</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .news-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+        margin-top: 30px;
+      }
+
+      .news-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .news-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      .news-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+      }
+
+      .news-content {
+        padding: 20px;
+      }
+
+      .news-date {
+        color: #7f8c8d;
+        font-size: 0.9em;
+        margin-bottom: 10px;
+      }
+
+      .news-excerpt {
+        color: #555;
+        margin-bottom: 15px;
+      }
+
+      .read-more {
+        color: #3498db;
+        text-decoration: none;
+        font-weight: bold;
+        display: inline-block;
+        transition: color 0.3s;
+      }
+
+      .read-more:hover {
+        color: #2980b9;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div class="logo">
+          <a href="index.html">MWSW</a>
+          <p>The Man Who Sold The World</p>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="catalog.html">Каталог</a></li>
+            <li><a href="news.html">Новости</a></li>
+            <li><a href="cart.html">Корзина</a></li>
+            <li><a href="login.html">Войти</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <h1>Новости космоса</h1>
+        <p>Самые свежие новости о планетах, космических исследованиях и наших предложениях.</p>
+
+        <div class="news-grid">
+          <div class="news-card">
+            <img src="https://i.pinimg.com/736x/2c/71/8d/2c718d6c9e7c501a6019f2a414faf030.jpg" alt="Новая планета" class="news-image" />
+            <div class="news-content">
+              <h3>Открыта новая экзопланета в зоне обитаемости</h3>
+              <div class="news-date">15 марта 2023</div>
+              <p class="news-excerpt">Астрономы обнаружили планету, похожую на Землю, в зоне обитаемости звезды...</p>
+              <a href="news-item.html?id=1" class="read-more">Читать далее</a>
+            </div>
+          </div>
+
+          <div class="news-card">
+            <img src="https://i.pinimg.com/736x/f6/6a/52/f66a521fff24ba140876f01cbc1463d8.jpg" alt="Марс" class="news-image" />
+            <div class="news-content">
+              <h3>Марсианская колония: новые перспективы</h3>
+              <div class="news-date">10 марта 2023</div>
+              <p class="news-excerpt">Ученые представили новые технологии для создания устойчивой среды на Марсе...</p>
+              <a href="news-item.html?id=2" class="read-more">Читать далее</a>
+            </div>
+          </div>
+
+          <div class="news-card">
+            <img src="https://i.pinimg.com/736x/32/46/1d/32461d3c1841f4ec987f307bab502d19.jpg" alt="Юпитер" class="news-image" />
+            <div class="news-content">
+              <h3>Тайны Большого Красного Пятна Юпитера</h3>
+              <div class="news-date">5 марта 2023</div>
+              <p class="news-excerpt">Новые исследования раскрывают секреты гигантского шторма на Юпитере...</p>
+              <a href="news-item.html?id=3" class="read-more">Читать далее</a>
+            </div>
+          </div>
+
+          <div class="news-card">
+            <img src="https://i.pinimg.com/736x/b4/36/f4/b436f48a7511fa559e11dd315770f039.jpg" alt="Кольца Сатурна" class="news-image" />
+            <div class="news-content">
+              <h3>Кольца Сатурна исчезают быстрее, чем ожидалось</h3>
+              <div class="news-date">28 февраля 2023</div>
+              <p class="news-excerpt">
+                Согласно новым данным, знаменитые кольца Сатурна могут исчезнуть через 100 миллионов лет...
+              </p>
+              <a href="news-item.html?id=4" class="read-more">Читать далее</a>
+            </div>
+          </div>
+
+          <div class="news-card">
+            <img src="https://i.pinimg.com/736x/03/98/16/039816cf25cc729c1e5dfd23f7592fff.jpg" alt="Венера" class="news-image" />
+            <div class="news-content">
+              <h3>Венера: возрождение интереса</h3>
+              <div class="news-date">20 февраля 2023</div>
+              <p class="news-excerpt">
+                После обнаружения возможных признаков жизни в атмосфере Венеры, научное сообщество...
+              </p>
+              <a href="news-item.html?id=5" class="read-more">Читать далее</a>
+            </div>
+          </div>
+
+          <div class="news-card">
+            <img src="https://i.pinimg.com/736x/79/3b/44/793b4433bcfc50a04f0a04e45bf54e4e.jpg" alt="Солнечная система" class="news-image" />
+            <div class="news-content">
+              <h3>Новые границы Солнечной системы</h3>
+              <div class="news-date">15 февраля 2023</div>
+              <p class="news-excerpt">Ученые пересматривают границы нашей Солнечной системы после новых открытий...</p>
+              <a href="news-item.html?id=6" class="read-more">Читать далее</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="footer-links">
+          <a href="index.html">О нас</a>
+          <a href="#">Facebook</a>
+          <a href="#">Twitter</a>
+          <a href="#">Instagram</a>
+        </div>
+        <p>&copy; 2023 MWSW - The Man Who Sold The World. Все права защищены.</p>
+      </div>
+    </footer>
+  </body>
+</html>

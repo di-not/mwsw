@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MWSW - The Man Who Sold The World</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .hero {
+        background:
+          linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+          url("https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80")
+            no-repeat center center;
+        background-size: cover;
+        color: white;
+        text-align: center;
+        padding: 120px 20px;
+        border-radius: 0 0 30px 30px;
+      }
+
+      .hero h1 {
+        font-size: 3em;
+        margin-bottom: 20px;
+      }
+
+      .hero p {
+        font-size: 1.2em;
+        margin-bottom: 30px;
+      }
+
+      .features {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        margin: 50px 0;
+      }
+
+      .subtitle {
+        color: #fce036;
+      }
+
+      .feature {
+        width: 30%;
+        min-width: 250px;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .feature img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 10px;
+        transition: transform 0.3s;
+      }
+
+      .feature img:hover {
+        transform: scale(1.05);
+      }
+
+      .about {
+        background: #f9f9f9;
+        padding: 50px 0;
+        border-radius: 20px;
+        margin: 30px 0;
+      }
+
+      @media (max-width: 768px) {
+        .hero h1 {
+          font-size: 2em;
+        }
+
+        .feature {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div class="logo">
+          <a href="index.html">MWSW</a>
+          <p>The Man Who Sold The World</p>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="catalog.html">Каталог</a></li>
+            <li><a href="favorites.html">Избранное</a></li>
+            <li><a href="cart.html">Корзина</a></li>
+            <li><a href="login.html" id="auth-link">Войти</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="hero">
+        <div class="container">
+          <h1 class="subtitle">MWSW - Покупка планет Солнечной системы!</h1>
+          <p>
+            Станьте владельцем уникального небесного тела. Исключительные права
+            собственности гарантированы.
+          </p>
+          <a href="catalog.html" class="btn">Перейти к каталогу</a>
+        </div>
+      </div>
+
+      <div class="about">
+        <div class="container">
+          <h2>Мы продаём планеты!</h2>
+          <p>
+            Мы - первая и единственная компания, предлагающая законную покупку
+            планет Солнечной системы. Наша миссия - сделать космос доступным для
+            каждого. Все сделки оформляются официально с выдачей сертификата
+            собственности.
+          </p>
+          <p>
+            Наша команда астрономов и юристов гарантирует прозрачность каждой
+            сделки и юридическую чистоту документов.
+          </p>
+        </div>
+      </div>
+
+      <div class="container">
+        <h2>Популярные планеты</h2>
+        <div class="features" id="popular-planets">
+          <div class="loading-spinner">Загрузка...</div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="footer-links">
+          <a href="index.html">О нас</a>
+          <a href="#">Facebook</a>
+          <a href="#">Twitter</a>
+          <a href="#">Instagram</a>
+        </div>
+        <p>
+          &copy; 2024 MWSW - The Man Who Sold The World. Все права защищены.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      const API_BASE_URL = "http://localhost:5280";
+      let currentUser = null;
+
+      function checkAuth() {
+        const user =
+          localStorage.getItem("currentUser") ||
+          sessionStorage.getItem("currentUser");
+        if (user) {
+          currentUser = JSON.parse(user);
+          document.getElementById("auth-link").textContent =
+            currentUser.fullName.split(" ")[0];
+          document.getElementById("auth-link").href = "profile.html";
+        } else {
+          document.getElementById("auth-link").textContent = "Войти";
+          document.getElementById("auth-link").href = "login.html";
+        }
+      }
+
+      function escapeHtml(text) {
+        if (!text) return "";
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      function formatPrice(price) {
+        if (!price && price !== 0) return "0";
+        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      }
+
+      async function loadPopularPlanets() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/planets`);
+          const planets = await response.json();
+
+          const popular = planets.filter((p) => !p.SoldOut).slice(0, 3);
+
+          const container = document.getElementById("popular-planets");
+
+          if (popular.length === 0) {
+            container.innerHTML = "<p>Нет доступных планет</p>";
+            return;
+          }
+
+          container.innerHTML = popular
+            .map(
+              (planet) => `
+                    <div class="feature">
+                        <a href="planet.html?id=${planet.Id}">
+                            <img src="${planet.ImageUrl || "https://via.placeholder.com/300x200"}" 
+                                 alt="${escapeHtml(planet.Name)}"
+                                 onerror="this.src='https://via.placeholder.com/300x200'">
+                            <h3>${escapeHtml(planet.Name)}</h3>
+                        </a>
+                        <p>${escapeHtml(planet.ShortDescription || "Описание отсутствует")}</p>
+                        <div class="planet-price">${formatPrice(planet.Price)} ₽</div>
+                    </div>
+                `,
+            )
+            .join("");
+        } catch (error) {
+          console.error("Ошибка загрузки популярных планет:", error);
+          document.getElementById("popular-planets").innerHTML =
+            "<p>Ошибка загрузки данных</p>";
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        checkAuth();
+        loadPopularPlanets();
+      });
+    </script>
+  </body>
+</html>

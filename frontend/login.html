@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Вход - MWSW</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .auth-container {
+        max-width: 450px;
+        margin: 50px auto;
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .auth-header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .auth-header h1 {
+        margin-bottom: 10px;
+        color: #fce036;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #2c3e50;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1em;
+        transition: all 0.3s;
+      }
+
+      .form-group input:focus {
+        border-color: #fce036;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(252, 224, 54, 0.1);
+      }
+
+      .auth-btn {
+        width: 100%;
+        padding: 14px;
+        background: #fce036;
+        color: #121208;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .auth-btn:hover {
+        background: #e6cf3e;
+        transform: translateY(-2px);
+      }
+
+      .auth-links {
+        text-align: center;
+        margin-top: 25px;
+      }
+
+      .auth-links a {
+        color: #fce036;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .auth-links a:hover {
+        color: #c7b32b;
+        text-decoration: underline;
+      }
+
+      .error-message {
+        background: #fdeaea;
+        color: #e74c3c;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+        display: none;
+      }
+
+      .success-message {
+        background: #d4edda;
+        color: #155724;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+        display: none;
+      }
+
+      .remember-me {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .remember-me input {
+        margin-right: 10px;
+        width: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div class="logo">
+          <a href="index.html">MWSW</a>
+          <p>The Man Who Sold The World</p>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="catalog.html">Каталог</a></li>
+            <li><a href="favorites.html">Избранное</a></li>
+            <li><a href="cart.html">Корзина</a></li>
+            <li><a href="login.html" class="active">Войти</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <div class="auth-container">
+          <div class="auth-header">
+            <h1>Вход в аккаунт</h1>
+            <p>Добро пожаловать обратно!</p>
+          </div>
+
+          <div id="error-message" class="error-message"></div>
+          <div id="success-message" class="success-message"></div>
+
+          <form id="login-form">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                placeholder="ivan@example.com"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="password">Пароль</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                required
+                placeholder="Введите пароль"
+              />
+            </div>
+
+            <div class="remember-me">
+              <input type="checkbox" id="remember" />
+              <label for="remember">Запомнить меня</label>
+            </div>
+
+            <button type="submit" class="auth-btn">Войти</button>
+
+            <div class="auth-links">
+              <a href="register.html">Нет аккаунта? Зарегистрироваться</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="footer-links">
+          <a href="index.html">О нас</a>
+          <a href="#">Facebook</a>
+          <a href="#">Twitter</a>
+          <a href="#">Instagram</a>
+        </div>
+        <p>
+          &copy; 2024 MWSW - The Man Who Sold The World. Все права защищены.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      const API_BASE_URL = "http://localhost:5280";
+
+      document
+        .getElementById("login-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+          const remember = document.getElementById("remember").checked;
+
+          const errorDiv = document.getElementById("error-message");
+          const successDiv = document.getElementById("success-message");
+
+          errorDiv.style.display = "none";
+          successDiv.style.display = "none";
+
+          try {
+            const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email, password }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              if (remember) {
+                localStorage.setItem("currentUser", JSON.stringify(data));
+              } else {
+                sessionStorage.setItem("currentUser", JSON.stringify(data));
+              }
+
+              successDiv.textContent = data.message || "Вход выполнен успешно";
+              successDiv.style.display = "block";
+
+              setTimeout(() => {
+                window.location.href = "index.html";
+              }, 1500);
+            } else {
+              errorDiv.textContent = data.message || "Ошибка при входе";
+              errorDiv.style.display = "block";
+            }
+          } catch (error) {
+            console.error("Ошибка:", error);
+            errorDiv.textContent = "Ошибка подключения к серверу";
+            errorDiv.style.display = "block";
+          }
+        });
+
+      if (
+        localStorage.getItem("currentUser") ||
+        sessionStorage.getItem("currentUser")
+      ) {
+        window.location.href = "index.html";
+      }
+    </script>
+  </body>
+</html>

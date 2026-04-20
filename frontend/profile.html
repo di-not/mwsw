@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Личный кабинет - MWSW</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .profile-container {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        gap: 30px;
+        margin-top: 30px;
+      }
+
+      .profile-sidebar {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        height: fit-content;
+      }
+
+      .profile-content {
+        background: white;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .user-avatar {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2em;
+        margin: 0 auto 15px;
+        color: white;
+      }
+
+      .profile-menu {
+        list-style: none;
+      }
+
+      .profile-menu li {
+        margin-bottom: 10px;
+      }
+
+      .profile-menu a {
+        display: block;
+        padding: 10px 15px;
+        color: #2c3e50;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background 0.3s;
+      }
+
+      .profile-menu a:hover,
+      .profile-menu a.active {
+        background: #f5f5f5;
+        color: #fce036;
+      }
+
+      .profile-div {
+        margin-bottom: 30px;
+      }
+
+      .profile-div h2 {
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .info-item {
+        margin-bottom: 15px;
+      }
+
+      .info-label {
+        font-weight: bold;
+        color: #7f8c8d;
+        margin-bottom: 5px;
+      }
+
+      .info-value {
+        color: #2c3e50;
+      }
+
+      .logout-btn {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 20px;
+        transition: background 0.3s;
+      }
+
+      .logout-btn:hover {
+        background: #c0392b;
+      }
+
+      @media (max-width: 768px) {
+        .profile-container {
+          grid-template-columns: 1fr;
+        }
+
+        .info-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div class="logo">
+          <a href="index.html">MWSW</a>
+          <p>The Man Who Sold The World</p>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="catalog.html">Каталог</a></li>
+            <li><a href="favorites.html">Избранное</a></li>
+            <li><a href="cart.html">Корзина</a></li>
+            <li><a href="profile.html" class="active">Профиль</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <h1>Личный кабинет</h1>
+
+        <div id="profile-container" class="profile-container">
+          <div class="loading-spinner">Загрузка...</div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="footer-links">
+          <a href="index.html">О нас</a>
+          <a href="#">Facebook</a>
+          <a href="#">Twitter</a>
+          <a href="#">Instagram</a>
+        </div>
+        <p>
+          &copy; 2024 MWSW - The Man Who Sold The World. Все права защищены.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      let currentUser = null;
+
+      function checkAuth() {
+        const user =
+          localStorage.getItem("currentUser") ||
+          sessionStorage.getItem("currentUser");
+        if (user) {
+          currentUser = JSON.parse(user);
+          displayProfile();
+        } else {
+          window.location.href = "login.html";
+        }
+      }
+
+      function escapeHtml(text) {
+        if (!text) return "";
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      function formatDate(dateString) {
+        if (!dateString) return "Не указано";
+        const date = new Date(dateString);
+        return date.toLocaleDateString("ru-RU");
+      }
+
+      function displayProfile() {
+        const container = document.getElementById("profile-container");
+
+        const avatarColor = currentUser.avatarColor || "#3498db";
+        const initials = (currentUser.fullName || "U")
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .toUpperCase();
+
+        container.innerHTML = `
+                <aside class="profile-sidebar">
+                    <div class="user-avatar">
+                        <div class="avatar" style="background: ${avatarColor}">${escapeHtml(initials)}</div>
+                        <h2>${escapeHtml(currentUser.fullName)}</h2>
+                        <p>Клиент с ${formatDate(currentUser.registrationDate) || "2024"}</p>
+                    </div>
+                    <ul class="profile-menu">
+                        <li><a href="profile.html" class="active">Общая информация</a></li>
+                        <li><a href="orders.html">История заказов</a></li>
+                    </ul>
+                    <button class="logout-btn" onclick="logout()">Выйти</button>
+                </aside>
+
+                <div class="profile-content">
+                    <div class="profile-div">
+                        <h2>Общая информация</h2>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Полное имя</div>
+                                <div class="info-value">${escapeHtml(currentUser.fullName)}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Email</div>
+                                <div class="info-value">${escapeHtml(currentUser.email)}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Телефон</div>
+                                <div class="info-value">${escapeHtml(currentUser.phone || "Не указан")}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Дата рождения</div>
+                                <div class="info-value">${formatDate(currentUser.birthDate)}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      function logout() {
+        localStorage.removeItem("currentUser");
+        sessionStorage.removeItem("currentUser");
+        window.location.href = "index.html";
+      }
+
+      document.addEventListener("DOMContentLoaded", checkAuth);
+    </script>
+  </body>
+</html>

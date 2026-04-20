@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Избранное - MWSW</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .favorites-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .favorites-stats {
+        color: #7f8c8d;
+      }
+
+      .favorites-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+      }
+
+      .favorite-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition:
+          transform 0.3s,
+          box-shadow 0.3s;
+        position: relative;
+      }
+
+      .favorite-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      .favorite-card.sold-out {
+        opacity: 0.7;
+      }
+
+      .favorite-card.sold-out::after {
+        content: "Распродано";
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: #e74c3c;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 0.8em;
+        z-index: 2;
+      }
+
+      .favorite-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+      }
+
+      .favorite-info {
+        padding: 15px;
+      }
+
+      .favorite-name {
+        font-size: 1.2em;
+        margin-bottom: 10px;
+      }
+
+      .favorite-name a {
+        text-decoration: none;
+        color: #2c3e50;
+      }
+
+      .favorite-name a:hover {
+        color: #fce036;
+      }
+
+      .favorite-price {
+        font-weight: bold;
+        color: #2c3e50;
+        font-size: 1.2em;
+        margin: 10px 0;
+      }
+
+      .favorite-type {
+        display: inline-block;
+        padding: 5px 10px;
+        background: #f0f0f0;
+        border-radius: 5px;
+        font-size: 0.85em;
+        margin-bottom: 10px;
+      }
+
+      .favorite-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .favorite-actions .btn {
+        flex: 1;
+        text-align: center;
+        font-size: 0.9em;
+        padding: 8px;
+      }
+
+      .remove-favorite {
+        background: #e74c3c;
+        color: white;
+      }
+
+      .remove-favorite:hover {
+        background: #c0392b;
+      }
+
+      .empty-favorites {
+        text-align: center;
+        padding: 60px 20px;
+        background: white;
+        border-radius: 12px;
+      }
+
+      .empty-favorites-icon {
+        font-size: 4em;
+        color: #bdc3c7;
+        margin-bottom: 20px;
+      }
+
+      .empty-favorites h2 {
+        margin-bottom: 10px;
+      }
+
+      .empty-favorites p {
+        color: #7f8c8d;
+        margin-bottom: 20px;
+      }
+
+      .loading-spinner {
+        text-align: center;
+        padding: 50px;
+      }
+
+      .toast-notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        border-radius: 8px;
+        z-index: 1000;
+        animation: slideIn 0.3s ease;
+        color: white;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .favorites-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div class="logo">
+          <a href="index.html">MWSW</a>
+          <p>The Man Who Sold The World</p>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="catalog.html">Каталог</a></li>
+            <li><a href="favorites.html" class="active">Избранное</a></li>
+            <li><a href="cart.html">Корзина</a></li>
+            <li><a href="login.html" id="auth-link">Войти</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <div class="favorites-header">
+          <h1>Избранное</h1>
+          <div class="favorites-stats" id="favorites-stats"></div>
+        </div>
+
+        <div id="favorites-container">
+          <div class="loading-spinner">Загрузка...</div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="footer-links">
+          <a href="index.html">О нас</a>
+          <a href="#">Facebook</a>
+          <a href="#">Twitter</a>
+          <a href="#">Instagram</a>
+        </div>
+        <p>
+          &copy; 2024 MWSW - The Man Who Sold The World. Все права защищены.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      const API_BASE_URL = "http://localhost:5280";
+      let currentUser = null;
+      let currentFavorites = []; // Сохраняем список избранного
+
+      function checkAuth() {
+        const user =
+          localStorage.getItem("currentUser") ||
+          sessionStorage.getItem("currentUser");
+        if (user) {
+          currentUser = JSON.parse(user);
+          document.getElementById("auth-link").textContent =
+            currentUser.fullName.split(" ")[0];
+          document.getElementById("auth-link").href = "profile.html";
+          loadFavorites();
+        } else {
+          document.getElementById("auth-link").textContent = "Войти";
+          document.getElementById("auth-link").href = "login.html";
+          window.location.href = "login.html";
+        }
+      }
+
+      function escapeHtml(text) {
+        if (!text) return "";
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      function formatPrice(price) {
+        if (!price && price !== 0) return "0";
+        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      }
+
+      function showNotification(message, type) {
+        const notification = document.createElement("div");
+        notification.className = "toast-notification";
+        notification.style.background =
+          type === "error" ? "#e74c3c" : "#27ae60";
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 3000);
+      }
+
+      async function loadFavorites() {
+        const container = document.getElementById("favorites-container");
+
+        try {
+          const response = await fetch(
+            `${API_BASE_URL}/api/favorites/${currentUser.id}`,
+          );
+          if (!response.ok) throw new Error("Ошибка загрузки");
+          currentFavorites = await response.json();
+
+          if (!currentFavorites || currentFavorites.length === 0) {
+            container.innerHTML = `
+                        <div class="empty-favorites">
+                            <div class="empty-favorites-icon">⭐</div>
+                            <h2>У вас пока нет избранных планет</h2>
+                            <p>Добавляйте планеты в избранное, чтобы не потерять понравившиеся варианты</p>
+                            <a href="catalog.html" class="btn">Перейти в каталог</a>
+                        </div>
+                    `;
+            return;
+          }
+
+          document.getElementById("favorites-stats").textContent =
+            `${currentFavorites.length} планета(ы) в избранном`;
+
+          container.innerHTML = `
+                    <div class="favorites-grid">
+                        ${currentFavorites
+                          .map((planet) => {
+                            const soldOut = planet.SoldOut === true;
+
+                            return `
+                                <div class="favorite-card ${soldOut ? "sold-out" : ""}">
+                                    <a href="planet.html?id=${planet.Id}">
+                                        <img src="${planet.ImageUrl || "https://via.placeholder.com/300x200"}" 
+                                             alt="${escapeHtml(planet.Name)}" 
+                                             class="favorite-image"
+                                             onerror="this.src='https://via.placeholder.com/300x200'">
+                                    </a>
+                                    <div class="favorite-info">
+                                        <span class="favorite-type">${escapeHtml(planet.Type || "Неизвестно")}</span>
+                                        <h3 class="favorite-name">
+                                            <a href="planet.html?id=${planet.Id}">${escapeHtml(planet.Name)}</a>
+                                        </h3>
+                                        <p>${escapeHtml(planet.ShortDescription || "Описание отсутствует")}</p>
+                                        <div class="favorite-price">${formatPrice(planet.Price)} ₽</div>
+                                        <div class="favorite-actions">
+                                            <button class="btn add-to-cart" data-planet-id="${planet.Id}" ${soldOut ? 'disabled style="background:#95a5a6;"' : ""}>${soldOut ? "Распродано" : "В корзину"}</button>
+                                            <button class="btn remove-favorite" data-planet-id="${planet.Id}">Удалить</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                          })
+                          .join("")}
+                    </div>
+                `;
+
+          document.querySelectorAll(".add-to-cart").forEach((btn) => {
+            btn.addEventListener("click", async (e) => {
+              e.preventDefault();
+              const planetId = parseInt(btn.dataset.planetId);
+              await addToCart(planetId);
+            });
+          });
+
+          document.querySelectorAll(".remove-favorite").forEach((btn) => {
+            btn.addEventListener("click", async (e) => {
+              e.preventDefault();
+              const planetId = parseInt(btn.dataset.planetId);
+              await removeFromFavorites(planetId);
+            });
+          });
+        } catch (error) {
+          console.error("Ошибка загрузки избранного:", error);
+          container.innerHTML =
+            '<div class="empty-favorites"><p>Ошибка загрузки данных</p></div>';
+        }
+      }
+
+      async function addToCart(planetId) {
+        if (!currentUser) {
+          showNotification("Пожалуйста, войдите в аккаунт", "error");
+          return;
+        }
+
+        // Находим планету в currentFavorites
+        const planet = currentFavorites.find((p) => p.Id === planetId);
+        if (!planet) {
+          showNotification("Планета не найдена", "error");
+          return;
+        }
+
+        if (planet.SoldOut === true) {
+          showNotification(
+            "Эта планета распродана и не может быть добавлена в корзину",
+            "error",
+          );
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/cart/add`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId: currentUser.id,
+              planetId: planetId,
+              quantity: 1,
+            }),
+          });
+
+          if (response.ok) {
+            showNotification("Товар добавлен в корзину", "success");
+          } else {
+            const error = await response.json();
+            showNotification(error.message || "Ошибка при добавлении", "error");
+          }
+        } catch (error) {
+          console.error("Ошибка:", error);
+          showNotification("Ошибка при добавлении", "error");
+        }
+      }
+
+      async function removeFromFavorites(planetId) {
+        try {
+          const response = await fetch(
+            `${API_BASE_URL}/api/favorites/remove?userId=${currentUser.id}&planetId=${planetId}`,
+            {
+              method: "DELETE",
+            },
+          );
+
+          if (response.ok) {
+            showNotification("Удалено из избранного", "success");
+            loadFavorites(); // Перезагружаем список
+          } else {
+            showNotification("Ошибка при удалении", "error");
+          }
+        } catch (error) {
+          console.error("Ошибка:", error);
+          showNotification("Ошибка при удалении", "error");
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", checkAuth);
+    </script>
+  </body>
+</html>
