@@ -1,11 +1,11 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-COPY MWSW.Backend.csproj ./
-RUN dotnet restore ./MWSW.Backend.csproj
+COPY MWSW.Backend/MWSW.Backend.csproj MWSW.Backend/
+RUN dotnet restore ./MWSW.Backend/MWSW.Backend.csproj
 
-COPY . .
-RUN dotnet publish ./MWSW.Backend.csproj -c Release -o /app/publish /p:UseAppHost=false
+COPY MWSW.Backend/ MWSW.Backend/
+RUN dotnet publish ./MWSW.Backend/MWSW.Backend.csproj -c Release -o /app/publish /p:UseAppHost=false
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app

@@ -1,0 +1,10 @@
+.git
+**/bin
+**/obj
+**/build-temp
+.vs
+.vscode
+docker-compose.yml
+LaboratornayaRabota1.docx
+LaboratornayaRabota2.docx
+~$boratornayaRabota1.docx
