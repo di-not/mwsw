@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
@@ -50,6 +50,7 @@
         background: white;
         border-radius: 12px;
         overflow: hidden;
+        min-width: 0;
         transition:
           transform 0.3s,
           box-shadow 0.3s;
@@ -95,6 +96,7 @@
         height: 200px;
         object-fit: cover;
         display: block;
+        background: #f3f6fa;
         transition: transform 0.3s;
       }
 
@@ -104,6 +106,8 @@
 
       .planet-info {
         padding: 15px;
+        min-width: 0;
+        overflow: hidden;
       }
 
       .planet-price {
@@ -118,6 +122,14 @@
         font-size: 0.9em;
         margin-bottom: 15px;
         min-height: 60px;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      .planet-info h3,
+      .planet-info h3 a {
+        overflow-wrap: anywhere;
+        word-break: break-word;
       }
 
       .favorite-btn {
@@ -360,7 +372,7 @@
     </footer>
 
     <script>
-      const API_BASE_URL = "http://localhost:5280";
+      const API_BASE_URL = "https://backend-production-7272.up.railway.app";
       let currentUser = null;
       let allPlanets = [];
       let favorites = new Set();
@@ -459,6 +471,23 @@
       function formatPrice(price) {
         if (!price && price !== 0) return "0";
         return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      }
+
+      function getSafeImageUrl(rawUrl) {
+        const fallback = "https://via.placeholder.com/300x200";
+        const value = String(rawUrl ?? "").trim();
+        if (!value) return fallback;
+
+        try {
+          const parsed = new URL(value);
+          if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+            return parsed.href;
+          }
+        } catch {
+          return fallback;
+        }
+
+        return fallback;
       }
 
       async function loadFavorites() {
@@ -565,8 +594,7 @@
             // Поля приходят с заглавной буквы!
             const id = planet.Id;
             const name = planet.Name || "Без названия";
-            const imageUrl =
-              planet.ImageUrl || "https://via.placeholder.com/300x200";
+            const imageUrl = getSafeImageUrl(planet.ImageUrl);
             const price = planet.Price || 0;
             const type = planet.Type || "Неизвестно";
             const mass = planet.Mass || "Н/Д";
@@ -779,3 +807,4 @@
     </script>
   </body>
 </html>
+

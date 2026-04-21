@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
@@ -10,23 +10,36 @@
         display: flex;
         gap: 40px;
         margin-top: 30px;
+        min-width: 0;
       }
 
       .planet-image {
         flex: 1;
         border-radius: 10px;
         overflow: hidden;
+        min-width: 0;
       }
 
       .planet-image img {
         width: 100%;
-        height: auto;
+        height: 100%;
+        max-height: 560px;
+        object-fit: cover;
         display: block;
+        background: #f3f6fa;
       }
 
       .planet-info {
         flex: 1;
         position: relative;
+        min-width: 0;
+      }
+
+      .planet-info h1,
+      .planet-info p,
+      .feature-value {
+        overflow-wrap: anywhere;
+        word-break: break-word;
       }
 
       .planet-price {
@@ -168,7 +181,7 @@
     </footer>
 
     <script>
-      const API_BASE_URL = "http://localhost:5280";
+      const API_BASE_URL = "https://backend-production-7272.up.railway.app";
       let currentUser = null;
       let currentPlanet = null;
 
@@ -197,6 +210,23 @@
       function formatPrice(price) {
         if (!price && price !== 0) return "0";
         return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      }
+
+      function getSafeImageUrl(rawUrl) {
+        const fallback = "https://via.placeholder.com/600x400";
+        const value = String(rawUrl ?? "").trim();
+        if (!value) return fallback;
+
+        try {
+          const parsed = new URL(value);
+          if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+            return parsed.href;
+          }
+        } catch {
+          return fallback;
+        }
+
+        return fallback;
       }
 
       function showNotification(message, type) {
@@ -299,20 +329,18 @@
         }
       }
 
-      async function addToCart(planetId) {
+      async function addToCart() {
         if (!currentUser) {
           showNotification("Пожалуйста, войдите в аккаунт", "error");
           return;
         }
 
-        // Находим планету и проверяем наличие
-        const planet = favoritesList.find((p) => p.Id === planetId);
-        if (!planet) {
+        if (!currentPlanet) {
           showNotification("Планета не найдена", "error");
           return;
         }
 
-        if (planet.SoldOut === true) {
+        if (currentPlanet.SoldOut === true) {
           showNotification(
             "Эта планета распродана и не может быть добавлена в корзину",
             "error",
@@ -326,7 +354,7 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               userId: currentUser.id,
-              planetId: planetId,
+              planetId: currentPlanet.Id,
               quantity: 1,
             }),
           });
@@ -349,7 +377,7 @@
         container.innerHTML = `
                       <div class="planet-detail">
                           <div class="planet-image">
-                              <img src="${planet.ImageUrl || "https://via.placeholder.com/600x400"}"
+                              <img src="${getSafeImageUrl(planet.ImageUrl)}"
                                    alt="${escapeHtml(planet.Name)}"
                                    onerror="this.src='https://via.placeholder.com/600x400'">
                           </div>
@@ -410,3 +438,4 @@
     </script>
   </body>
 </html>
+
