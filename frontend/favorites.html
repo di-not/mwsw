@@ -299,7 +299,7 @@
 
                             return `
                                 <div class="favorite-card ${soldOut ? "sold-out" : ""}">
-                                    <a href="planet.html?id=${planet.Id}">
+                                    <a href="planet?id=${planet.Id}">
                                         <img src="${planet.ImageUrl || "https://via.placeholder.com/300x200"}" 
                                              alt="${escapeHtml(planet.Name)}" 
                                              class="favorite-image"
@@ -308,7 +308,7 @@
                                     <div class="favorite-info">
                                         <span class="favorite-type">${escapeHtml(planet.Type || "Неизвестно")}</span>
                                         <h3 class="favorite-name">
-                                            <a href="planet.html?id=${planet.Id}">${escapeHtml(planet.Name)}</a>
+                                            <a href="planet?id=${planet.Id}">${escapeHtml(planet.Name)}</a>
                                         </h3>
                                         <p>${escapeHtml(planet.ShortDescription || "Описание отсутствует")}</p>
                                         <div class="favorite-price">${formatPrice(planet.Price)} ₽</div>

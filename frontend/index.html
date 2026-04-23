@@ -194,7 +194,7 @@
             .map(
               (planet) => `
                     <div class="feature">
-                        <a href="planet.html?id=${planet.Id}">
+                        <a href="planet?id=${planet.Id}">
                             <img src="${planet.ImageUrl || "https://via.placeholder.com/300x200"}" 
                                  alt="${escapeHtml(planet.Name)}"
                                  onerror="this.src='https://via.placeholder.com/300x200'">

@@ -241,12 +241,23 @@
 
       async function loadPlanet() {
         const urlParams = new URLSearchParams(window.location.search);
-        const planetId = urlParams.get("id");
+        const planetIdRaw = urlParams.get("id");
+        const planetNameRaw = urlParams.get("name");
+        const planetId = Number.parseInt(planetIdRaw ?? "", 10);
+        const planetName = (planetNameRaw || "").trim().toLowerCase();
 
         try {
           const response = await fetch(`${API_BASE_URL}/api/planets`);
           const planets = await response.json();
-          currentPlanet = planets.find((p) => p.Id === parseInt(planetId));
+          if (Number.isFinite(planetId)) {
+            currentPlanet = planets.find((p) => p.Id === planetId);
+          } else if (planetName) {
+            currentPlanet = planets.find(
+              (p) => (p.Name || "").toLowerCase() === planetName,
+            );
+          } else {
+            currentPlanet = null;
+          }
 
           if (currentPlanet) {
             displayPlanet(currentPlanet);

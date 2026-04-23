@@ -608,7 +608,7 @@
             return `
                     <div class="planet-card ${soldOut ? "sold-out" : ""}">
                         <div class="planet-media">
-                        <a href="planet.html?id=${id}">
+                        <a href="planet?id=${id}">
                             <img src="${imageUrl}" 
                                  alt="${escapeHtml(name)}" 
                                  class="planet-image"
@@ -620,7 +620,7 @@
                         </button>
                         </div>
                         <div class="planet-info">
-                            <h3><a href="planet.html?id=${id}" style="text-decoration: none; color: inherit;">${escapeHtml(name)}</a></h3>
+                            <h3><a href="planet?id=${id}" style="text-decoration: none; color: inherit;">${escapeHtml(name)}</a></h3>
                             <p class="planet-description">${escapeHtml(shortDescription)}</p>
                             <div class="planet-price">${formatPrice(price)} ₽</div>
                             ${
